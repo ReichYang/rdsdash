@@ -9,7 +9,7 @@ import datetime
 import numpy as np
 import pandas as pd
 
-import dash_bio as dashbio
+# import dash_bio as dashbio
 import dash_table
 from dash import no_update
 from dash.dependencies import Input, Output, ALL, State
@@ -28,7 +28,7 @@ from collections import Counter
 # In[2]:
 
 
-df=pd.read_csv("cleaned_df.csv", low_memory=False)
+df=pd.read_pickle("cleaned_df.pickle")
 
 
 # In[3]:
@@ -44,32 +44,32 @@ with open("Police_Districts.geojson") as f1:
 # In[4]:
 
 
-df['Datetime']=df.CrimeDate+' '+df.CrimeTime
+# df['Datetime']=df.CrimeDate+' '+df.CrimeTime
 
 
-# In[5]:
+# # In[5]:
 
 
-df['Datetime']=pd.to_datetime(df.Datetime)
+# df['Datetime']=pd.to_datetime(df.Datetime)
 
 
 
-df['Year']=df.Datetime.dt.year
-df['Month']=df.Datetime.dt.month
-df['MonthName']=df.Datetime.dt.month_name()
-df['Day']=df.Datetime.dt.day
-df['Quarter']=df.Datetime.dt.quarter
-df['Date']=df.Datetime.dt.date
-df['Hour']=df.Datetime.dt.hour
-df['Minute']=df.Datetime.dt.minute
-df['Period']=((df.Datetime.dt.hour% 24 + 4) // 4).map({1: 'Late Night',
-                      2: 'Early Morning',
-                      3: 'Morning',
-                      4: 'Noon',
-                      5: 'Evening',
-                      6: 'Night'})
-df['DayofWeek']=df.Datetime.dt.weekday
-df['WeekDay']=df.Datetime.dt.weekday.apply(lambda x: 'Weekend' if ((x==5)|(x==6)) else "Weekday")
+# df['Year']=df.Datetime.dt.year
+# df['Month']=df.Datetime.dt.month
+# df['MonthName']=df.Datetime.dt.month_name()
+# df['Day']=df.Datetime.dt.day
+# df['Quarter']=df.Datetime.dt.quarter
+# df['Date']=df.Datetime.dt.date
+# df['Hour']=df.Datetime.dt.hour
+# df['Minute']=df.Datetime.dt.minute
+# df['Period']=((df.Datetime.dt.hour% 24 + 4) // 4).map({1: 'Late Night',
+#                       2: 'Early Morning',
+#                       3: 'Morning',
+#                       4: 'Noon',
+#                       5: 'Evening',
+#                       6: 'Night'})
+# df['DayofWeek']=df.Datetime.dt.weekday
+# df['WeekDay']=df.Datetime.dt.weekday.apply(lambda x: 'Weekend' if ((x==5)|(x==6)) else "Weekday")
 
 
 
