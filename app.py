@@ -972,9 +972,6 @@ import splot
 import io
 import base64
 
-from PIL import Image
-
-
 
 
 def ci(crime, time):
