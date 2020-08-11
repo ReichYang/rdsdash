@@ -517,393 +517,393 @@ def filter_df(newdf,times):
 
 
 
-def season_html():
-    return html.Div(id='season', className='columns pretty_container', children=[
-        html.Div(style={"display": "inline-flex"}, children=[
-            html.H5("Seasonality Mining",
-                    style={'margin-left': '10px'}),
-            html.Div(children=[
-                html.I(
-                    className="fas fa-question-circle fa-lg"),
-#                 dbc.Tooltip("How can we interact with this? 1) Changing the kernel of the model to see the other kind of results; \n 2)\
-#                                 Selecting how many days you want to use to predict future email events;\n 3)\
-#                                     Showing the actual predicted result by hover on the dots in the line chart.", target="target2",
-#                             style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
-            ],
-                className="p-5 text-muted"
-            )]),
+# def season_html():
+#     return html.Div(id='season', className='columns pretty_container', children=[
+#         html.Div(style={"display": "inline-flex"}, children=[
+#             html.H5("Seasonality Mining",
+#                     style={'margin-left': '10px'}),
+#             html.Div(children=[
+#                 html.I(
+#                     className="fas fa-question-circle fa-lg"),
+# #                 dbc.Tooltip("How can we interact with this? 1) Changing the kernel of the model to see the other kind of results; \n 2)\
+# #                                 Selecting how many days you want to use to predict future email events;\n 3)\
+# #                                     Showing the actual predicted result by hover on the dots in the line chart.", target="target2",
+# #                             style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
+#             ],
+#                 className="p-5 text-muted"
+#             )]),
 
-        html.P(
-            children="A Temporal Process is a kind of random process whose realization consists of discrete events \
-                    localized in time. Compared with \
-                    traditional Time-Seris, each data entry was allocated in different time interval. The scattering nature of receiving\
-                    an email fits better with a Temporal Process Analysis. \n \
-                    A very popular kind of termporal process is the Hawkes process, which could be consider\
-                    as an 'auto-regression' type of process. Here I used the Hawkes Process to simulate the events.\
-                    You can select the Kernal and the days to forecast below.👇",
-            style={'margin': '10px'}
-        ),
-        html.Div(children=[ 
-            dcc.Tabs(id='stabsexample', value='stab1', children=[
-                dcc.Tab(label='Fourier', value='stab1'),
-                dcc.Tab(label='SARIMA', value='stab2'),
-                 dcc.Tab(label='TABTS', value='stab3')]),
-        html.Div(id='stabcontent')])
+#         html.P(
+#             children="A Temporal Process is a kind of random process whose realization consists of discrete events \
+#                     localized in time. Compared with \
+#                     traditional Time-Seris, each data entry was allocated in different time interval. The scattering nature of receiving\
+#                     an email fits better with a Temporal Process Analysis. \n \
+#                     A very popular kind of termporal process is the Hawkes process, which could be consider\
+#                     as an 'auto-regression' type of process. Here I used the Hawkes Process to simulate the events.\
+#                     You can select the Kernal and the days to forecast below.👇",
+#             style={'margin': '10px'}
+#         ),
+#         html.Div(children=[ 
+#             dcc.Tabs(id='stabsexample', value='stab1', children=[
+#                 dcc.Tab(label='Fourier', value='stab1'),
+#                 dcc.Tab(label='SARIMA', value='stab2'),
+#                  dcc.Tab(label='TABTS', value='stab3')]),
+#         html.Div(id='stabcontent')])
 
         
-    ]
-    ) 
+#     ]
+#     ) 
 
 
 # In[257]:
 
 
-def stab1():
-    return html.Div(children=[
-        html.Div(children=[dcc.Dropdown(
-            id='scrime',
-            options=[{'label': i.title(), 'value': i}
-                     for i in df.Description.unique()],
-            value='SHOOTING'
-        ),
-            dcc.RadioItems(
-            options=[
-                {'label': 'Construct Hourly Time Series', 'value': 'hourly'},
-                {'label': 'Construct Daily Time Series', 'value': 'daily'},
-                {'label': 'Construct Monthly Time Series', 'value': 'monthly'}
-            ],
-            value='hourly',
-                id='speriod'
-        )]),
-        html.Div(className='six columns', children=[
-                 dcc.Graph(id='stab1_line')]),
-        html.Div(className='six columns',id='stab1_df', children=[
-        dash_table.DataTable(
-                id='stab1_table',page_size= 15)])
+# def stab1():
+#     return html.Div(children=[
+#         html.Div(children=[dcc.Dropdown(
+#             id='scrime',
+#             options=[{'label': i.title(), 'value': i}
+#                      for i in df.Description.unique()],
+#             value='SHOOTING'
+#         ),
+#             dcc.RadioItems(
+#             options=[
+#                 {'label': 'Construct Hourly Time Series', 'value': 'hourly'},
+#                 {'label': 'Construct Daily Time Series', 'value': 'daily'},
+#                 {'label': 'Construct Monthly Time Series', 'value': 'monthly'}
+#             ],
+#             value='hourly',
+#                 id='speriod'
+#         )]),
+#         html.Div(className='six columns', children=[
+#                  dcc.Graph(id='stab1_line')]),
+#         html.Div(className='six columns',id='stab1_df', children=[
+#         dash_table.DataTable(
+#                 id='stab1_table',page_size= 15)])
 
 
 
-    ])
+#     ])
 
 
-def ftt_result(crime, period):
+# def ftt_result(crime, period):
     
-    sdf=df[(df.Year>=2014)&(df.Year)<=2020]
+#     sdf=df[(df.Year>=2014)&(df.Year)<=2020]
     
-    sdf=df[df.Description==crime]
+#     sdf=df[df.Description==crime]
     
-    if period=='hourly':
+#     if period=='hourly':
         
-        signal=sdf.resample('H', on='Datetime').sum()['Total Incidents']
-        fft_outputft, power, freq, peaks, peak_freq, peak_power= get_fftt(signal)
+#         signal=sdf.resample('H', on='Datetime').sum()['Total Incidents']
+#         fft_outputft, power, freq, peaks, peak_freq, peak_power= get_fftt(signal)
         
-        output = pd.DataFrame()
-        output['index'] = peaks
-        output['freq (1/hour)'] = peak_freq
-        output['amplitude'] = peak_power
-        output['period (hour)'] = 1 / peak_freq
-#         output['fft'] = fft_output[peaks]
-        output['peak']='peak'
-        output = output.sort_values('amplitude', ascending=False)
+#         output = pd.DataFrame()
+#         output['index'] = peaks
+#         output['freq (1/hour)'] = peak_freq
+#         output['amplitude'] = peak_power
+#         output['period (hour)'] = 1 / peak_freq
+# #         output['fft'] = fft_output[peaks]
+#         output['peak']='peak'
+#         output = output.sort_values('amplitude', ascending=False)
         
-        fft_df=pd.DataFrame()
-        fft_df['freq']=freq
-        fft_df['power']=power
+#         fft_df=pd.DataFrame()
+#         fft_df['freq']=freq
+#         fft_df['power']=power
 
-        f=px.line(fft_df, x='freq',y='power', title='All Frequencies and Their Amplitute')
-        f.add_trace(px.scatter(output, x='freq (1/hour)', y='amplitude', color='peak',template='ggplot2').data[0])
-        f.update_layout(margin={"l":0,"b":0},legend=dict(
-            orientation="h"))
+#         f=px.line(fft_df, x='freq',y='power', title='All Frequencies and Their Amplitute')
+#         f.add_trace(px.scatter(output, x='freq (1/hour)', y='amplitude', color='peak',template='ggplot2').data[0])
+#         f.update_layout(margin={"l":0,"b":0},legend=dict(
+#             orientation="h"))
 
-        ftt_table=dash_table.DataTable(
-                id='stab1_table',
-                columns=[{"name": i, "id": i} for i in output.columns],
-                data=output.to_dict('records'))
+#         ftt_table=dash_table.DataTable(
+#                 id='stab1_table',
+#                 columns=[{"name": i, "id": i} for i in output.columns],
+#                 data=output.to_dict('records'))
 
-    elif period=='daily':
+#     elif period=='daily':
         
-        signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
-        fft_outputft, power, freq, peaks, peak_freq, peak_power= get_fftt(signal)
+#         signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
+#         fft_outputft, power, freq, peaks, peak_freq, peak_power= get_fftt(signal)
         
-        output = pd.DataFrame()
-        output['index'] = peaks
-        output['freq (1/day)'] = peak_freq
-        output['amplitude'] = peak_power
-        output['period (day)'] = 1 / peak_freq
-#         output['fft'] = fft_output[peaks]
-        output['peak']='peak'
-        output = output.sort_values('amplitude', ascending=False)
+#         output = pd.DataFrame()
+#         output['index'] = peaks
+#         output['freq (1/day)'] = peak_freq
+#         output['amplitude'] = peak_power
+#         output['period (day)'] = 1 / peak_freq
+# #         output['fft'] = fft_output[peaks]
+#         output['peak']='peak'
+#         output = output.sort_values('amplitude', ascending=False)
                 
-        fft_df=pd.DataFrame()
-        fft_df['freq']=freq
-        fft_df['power']=power
+#         fft_df=pd.DataFrame()
+#         fft_df['freq']=freq
+#         fft_df['power']=power
 
-        f=px.line(fft_df, x='freq',y='power', title='All Frequencies and Their Amplitute')
-        f.add_trace(px.scatter(output, x='freq (1/day)', y='amplitude', color='peak',template='ggplot2').data[0])
-        f.update_layout(margin={"l":0,"b":0},legend=dict(
-            orientation="h"))
+#         f=px.line(fft_df, x='freq',y='power', title='All Frequencies and Their Amplitute')
+#         f.add_trace(px.scatter(output, x='freq (1/day)', y='amplitude', color='peak',template='ggplot2').data[0])
+#         f.update_layout(margin={"l":0,"b":0},legend=dict(
+#             orientation="h"))
 
-        ftt_table=dash_table.DataTable(
-                id='stab1_table',
-                columns=[{"name": i, "id": i} for i in output.columns],
-                data=output.to_dict('records'))
+#         ftt_table=dash_table.DataTable(
+#                 id='stab1_table',
+#                 columns=[{"name": i, "id": i} for i in output.columns],
+#                 data=output.to_dict('records'))
 
         
-    else:
-        signal=sdf.resample('M', on='Datetime').sum()['Total Incidents']
-        fft_outputft, power, freq, peaks, peak_freq, peak_power= get_fftt(signal)        
+#     else:
+#         signal=sdf.resample('M', on='Datetime').sum()['Total Incidents']
+#         fft_outputft, power, freq, peaks, peak_freq, peak_power= get_fftt(signal)        
         
-        output = pd.DataFrame()
-        output['index'] = peaks
-        output['freq (1/month)'] = peak_freq
-        output['amplitude'] = peak_power
-        output['period (month)'] = 1 / peak_freq
-#         output['fft'] = fft_output[peaks]
-        output['peak']='peak'
-        output = output.sort_values('amplitude', ascending=False)  
+#         output = pd.DataFrame()
+#         output['index'] = peaks
+#         output['freq (1/month)'] = peak_freq
+#         output['amplitude'] = peak_power
+#         output['period (month)'] = 1 / peak_freq
+# #         output['fft'] = fft_output[peaks]
+#         output['peak']='peak'
+#         output = output.sort_values('amplitude', ascending=False)  
         
-        fft_df=pd.DataFrame()
-        fft_df['freq']=freq
-        fft_df['power']=power
+#         fft_df=pd.DataFrame()
+#         fft_df['freq']=freq
+#         fft_df['power']=power
 
-        f=px.line(fft_df, x='freq',y='power', title='All Frequencies and Their Amplitute')
-        f.add_trace(px.scatter(output, x='freq (1/month)', y='amplitude', color='peak',template='ggplot2').data[0])
-        f.update_layout(margin={"l":0,"b":0},legend=dict(
-            orientation="h"))
+#         f=px.line(fft_df, x='freq',y='power', title='All Frequencies and Their Amplitute')
+#         f.add_trace(px.scatter(output, x='freq (1/month)', y='amplitude', color='peak',template='ggplot2').data[0])
+#         f.update_layout(margin={"l":0,"b":0},legend=dict(
+#             orientation="h"))
 
 
     
-    return f, output
+#     return f, output
 
 
-# In[232]:
+# # In[232]:
 
 
-from scipy import fft
-from scipy import signal as sig
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import math
+# from scipy import fft
+# from scipy import signal as sig
+# import matplotlib.pyplot as plt
+# import numpy as np
+# import pandas as pd
+# import math
 
-def get_fftt(signal):
-    fft_output = fft.fft(signal)
-    power = np.abs(fft_output)
-    freq = fft.fftfreq(len(signal))
+# def get_fftt(signal):
+#     fft_output = fft.fft(signal)
+#     power = np.abs(fft_output)
+#     freq = fft.fftfreq(len(signal))
     
-    mask = freq >= 0
-    freq = freq[mask]
-    power = power[mask]
+#     mask = freq >= 0
+#     freq = freq[mask]
+#     power = power[mask]
     
-    peaks = sig.find_peaks(power[freq >=0], prominence=200)[0]
-# peaks = power[freq >=0]
-    peak_freq =  freq[peaks]
-    peak_power = power[peaks]
+#     peaks = sig.find_peaks(power[freq >=0], prominence=200)[0]
+# # peaks = power[freq >=0]
+#     peak_freq =  freq[peaks]
+#     peak_power = power[peaks]
     
     
-    return fft_output, power, freq, peaks, peak_freq, peak_power
+#     return fft_output, power, freq, peaks, peak_freq, peak_power
 
 
 
 
-def sarima_html():
-    return html.Div(children=[
-        html.Div(children=[dcc.Dropdown(
-            id='sacrime',
-            options=[{'label': i.title(), 'value': i}
-                     for i in df.Description.unique()],
-            value='SHOOTING'
-        ),
-            dcc.RadioItems(
-            options=[
-                {'label': 'Construct Daily Time Series', 'value': 'daily'},
-                {'label': 'Construct Monthly Time Series', 'value': 'monthly'},
-                {'label': 'Construct Quarterly Time Series', 'value': 'quarterly'}
-            ],
-            value='quarterly',
-                id='saperiod'
-        )]),
-        html.Div(className='six columns', children=[
-                 dcc.Graph(id='stab2_decom')]),
-        html.Div(className='six columns', children=[
-        dash_table.DataTable(
-                id='stab2_par',page_size= 15)]),
+# def sarima_html():
+#     return html.Div(children=[
+#         html.Div(children=[dcc.Dropdown(
+#             id='sacrime',
+#             options=[{'label': i.title(), 'value': i}
+#                      for i in df.Description.unique()],
+#             value='SHOOTING'
+#         ),
+#             dcc.RadioItems(
+#             options=[
+#                 {'label': 'Construct Daily Time Series', 'value': 'daily'},
+#                 {'label': 'Construct Monthly Time Series', 'value': 'monthly'},
+#                 {'label': 'Construct Quarterly Time Series', 'value': 'quarterly'}
+#             ],
+#             value='quarterly',
+#                 id='saperiod'
+#         )]),
+#         html.Div(className='six columns', children=[
+#                  dcc.Graph(id='stab2_decom')]),
+#         html.Div(className='six columns', children=[
+#         dash_table.DataTable(
+#                 id='stab2_par',page_size= 15)]),
         
-        html.Div(className='columns', children=[
-        dcc.Graph(id='pred')]),
+#         html.Div(className='columns', children=[
+#         dcc.Graph(id='pred')]),
         
-        html.Div(className='six columns', children=[
-        dash_table.DataTable(
-                id='seco',page_size= 15)]),
-        html.Div(className='six columns', children=[
-        dash_table.DataTable(
-                id='noseco',page_size= 15)])
+#         html.Div(className='six columns', children=[
+#         dash_table.DataTable(
+#                 id='seco',page_size= 15)]),
+#         html.Div(className='six columns', children=[
+#         dash_table.DataTable(
+#                 id='noseco',page_size= 15)])
 
 
-    ])
+#     ])
 
 
-# In[388]:
+# # In[388]:
 
 
-def sarima_result(crime, period):
+# def sarima_result(crime, period):
     
-    sdf=df[(df.Year>=2014)&(df.Year)<=2020]
+#     sdf=df[(df.Year>=2014)&(df.Year)<=2020]
     
-    sdf=df[df.Description==crime]
+#     sdf=df[df.Description==crime]
     
-    if period=='monthly':
-        signal=sdf.resample('M', on='Datetime').sum()['Total Incidents']
-        decom_fig=decom(signal)
-        pra_df,se_co,nose_co,result_df=srima_fit(singnal,12)
+#     if period=='monthly':
+#         signal=sdf.resample('M', on='Datetime').sum()['Total Incidents']
+#         decom_fig=decom(signal)
+#         pra_df,se_co,nose_co,result_df=srima_fit(singnal,12)
         
-    elif period=='daily':
-        signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
-        decom_fig=decom(signal)
-        pra_df,se_co,nose_co,result_df=srima_fit(singnal,365)
-    else:
-        signal=sdf.resample('Q', on='Datetime').sum()['Total Incidents']
-        decom_fig=decom(signal)
-        pra_df,se_co,nose_co,result_df=srima_fit(singnal,4)
+#     elif period=='daily':
+#         signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
+#         decom_fig=decom(signal)
+#         pra_df,se_co,nose_co,result_df=srima_fit(singnal,365)
+#     else:
+#         signal=sdf.resample('Q', on='Datetime').sum()['Total Incidents']
+#         decom_fig=decom(signal)
+#         pra_df,se_co,nose_co,result_df=srima_fit(singnal,4)
         
     
-    return decom_fig, pra_df, se_co, nose_co, result_df
+#     return decom_fig, pra_df, se_co, nose_co, result_df
     
 
 
-# In[381]:
+# # In[381]:
 
 
-from statsmodels.tsa.seasonal import seasonal_decompose
-def decom(signal):
-    result = seasonal_decompose(signal)
-    fig = result.plot()
-    n_fig=tls.mpl_to_plotly(fig)
+# from statsmodels.tsa.seasonal import seasonal_decompose
+# def decom(signal):
+#     result = seasonal_decompose(signal)
+#     fig = result.plot()
+#     n_fig=tls.mpl_to_plotly(fig)
     
-    return n_fig
+#     return n_fig
 
 
-# In[385]:
+# # In[385]:
 
 
-import pmdarima as pm
-def srima_fit(signal, m):
+# import pmdarima as pm
+# def srima_fit(signal, m):
     
     
-    seasonal_model = pm.auto_arima(signal, start_p=1, start_q=1,
-                           max_p=3, max_q=3,m=m,
-                           start_P=0, seasonal=True,
-                           d=1, D=1, trace=True,
-                           error_action='ignore',  
-                           suppress_warnings=True, 
-                           stepwise=True)
+#     seasonal_model = pm.auto_arima(signal, start_p=1, start_q=1,
+#                            max_p=3, max_q=3,m=m,
+#                            start_P=0, seasonal=True,
+#                            d=1, D=1, trace=True,
+#                            error_action='ignore',  
+#                            suppress_warnings=True, 
+#                            stepwise=True)
     
-    non_seasonal_model = pm.auto_arima(signal, start_p=1, start_q=1,
-                           max_p=3, max_q=3,
-                           start_P=0, seasonal=False,
-                           d=1, D=1, trace=True,
-                           error_action='ignore',  
-                           suppress_warnings=True, 
-                           stepwise=True)
+#     non_seasonal_model = pm.auto_arima(signal, start_p=1, start_q=1,
+#                            max_p=3, max_q=3,
+#                            start_P=0, seasonal=False,
+#                            d=1, D=1, trace=True,
+#                            error_action='ignore',  
+#                            suppress_warnings=True, 
+#                            stepwise=True)
     
-    se_pra=seasonal_model.get_params()
-    se_pra['aic']=seasonal_model.aic()
+#     se_pra=seasonal_model.get_params()
+#     se_pra['aic']=seasonal_model.aic()
     
-    nose_pra=non_seasonal_model.get_params()
-    nose_pra['aic']=non_seasonal_model.aic()
+#     nose_pra=non_seasonal_model.get_params()
+#     nose_pra['aic']=non_seasonal_model.aic()
     
-    pra_df=pd.DataFrame([se_pra,nose_pra])
+#     pra_df=pd.DataFrame([se_pra,nose_pra])
     
-    se_co=pd.read_html(seasonal_model.summary().tables[1].as_html(), header=0, index_col=0)[0]
-    nose_co=pd.read_html(non_seasonal_model.summary().tables[1].as_html(), header=0, index_col=0)[0]
-    
-    
+#     se_co=pd.read_html(seasonal_model.summary().tables[1].as_html(), header=0, index_col=0)[0]
+#     nose_co=pd.read_html(non_seasonal_model.summary().tables[1].as_html(), header=0, index_col=0)[0]
     
     
-    train=signal[:int(0.8*(len(signal)))]
-    test=signal[int(0.8*(len(signal))):]
     
     
-    seasonal_model.fit(train)
-    se_forecast = seasonal_model.predict(n_periods=len(test))
-    
-    non_seasonal_model.fit(train)
-    nose_forecast = non_seasonal_model.predict(n_periods=len(test))
-    
-    future_forecast1 = pd.DataFrame(se_forecast,index = test.index,columns=['SesonalPrediction'])
-    future_forecast2 = pd.DataFrame(nose_forecast,index = test.index,columns=['NonseaPrediction'])
+#     train=signal[:int(0.8*(len(signal)))]
+#     test=signal[int(0.8*(len(signal))):]
     
     
-    result_df=pd.concat([test,future_forecast1,future_forecast2],axis=1)
+#     seasonal_model.fit(train)
+#     se_forecast = seasonal_model.predict(n_periods=len(test))
     
-    return pra_df,se_co,nose_co,result_df
+#     non_seasonal_model.fit(train)
+#     nose_forecast = non_seasonal_model.predict(n_periods=len(test))
+    
+#     future_forecast1 = pd.DataFrame(se_forecast,index = test.index,columns=['SesonalPrediction'])
+#     future_forecast2 = pd.DataFrame(nose_forecast,index = test.index,columns=['NonseaPrediction'])
+    
+    
+#     result_df=pd.concat([test,future_forecast1,future_forecast2],axis=1)
+    
+#     return pra_df,se_co,nose_co,result_df
 
 
-# In[413]:
+# # In[413]:
 
 
-from fbprophet import Prophet
-def pro(crime,period):
+# from fbprophet import Prophet
+# def pro(crime,period):
     
     
-    sdf=df[(df.Year>=2014)&(df.Year)<=2020]
+#     sdf=df[(df.Year>=2014)&(df.Year)<=2020]
     
-    sdf=df[df.Description==crime]
+#     sdf=df[df.Description==crime]
     
-    signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
-    
-    
-    if 'weekly' in period:
-    
-        m = Prophet(weekly_seasonality=True)
-    else:
-        m = Prophet(weekly_seasonality=False)
-    
-    if 'monthly' in period:
-        m.add_seasonality(name='monthly', period=30.5, fourier_order=5)
-    if 'quarterly' in period:
-        m.add_seasonality(name='quarterly', period=91.3125, fourier_order=10)
+#     signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
     
     
-    forecast = m.fit(df).predict(future)
+#     if 'weekly' in period:
     
-    fig = m.plot_components(forecast)
+#         m = Prophet(weekly_seasonality=True)
+#     else:
+#         m = Prophet(weekly_seasonality=False)
     
-    return tls.mpl_to_plotly(fig)
+#     if 'monthly' in period:
+#         m.add_seasonality(name='monthly', period=30.5, fourier_order=5)
+#     if 'quarterly' in period:
+#         m.add_seasonality(name='quarterly', period=91.3125, fourier_order=10)
+    
+    
+#     forecast = m.fit(df).predict(future)
+    
+#     fig = m.plot_components(forecast)
+    
+#     return tls.mpl_to_plotly(fig)
     
     
 
 
-# In[414]:
+# # In[414]:
 
 
-def pro_html():
-     return html.Div(children=[
-        html.Div(children=[dcc.Dropdown(
-            id='pcrime',
-            options=[{'label': i.title(), 'value': i}
-                     for i in df.Description.unique()],
-            value='SHOOTING'
-        ),
-            dcc.Dropdown(
-            options=[
-                {'label': 'Add Daily Seasonality', 'value': 'daily'},
-                {'label': 'Add Monthly Seasonality', 'value': 'monthly'},
-                {'label': 'Add Quarterly Seasonality', 'value': 'quarterly'}
-            ],
-            value=['quarterly'],
-                id='pperiod',
-                multi=True
+# def pro_html():
+#      return html.Div(children=[
+#         html.Div(children=[dcc.Dropdown(
+#             id='pcrime',
+#             options=[{'label': i.title(), 'value': i}
+#                      for i in df.Description.unique()],
+#             value='SHOOTING'
+#         ),
+#             dcc.Dropdown(
+#             options=[
+#                 {'label': 'Add Daily Seasonality', 'value': 'daily'},
+#                 {'label': 'Add Monthly Seasonality', 'value': 'monthly'},
+#                 {'label': 'Add Quarterly Seasonality', 'value': 'quarterly'}
+#             ],
+#             value=['quarterly'],
+#                 id='pperiod',
+#                 multi=True
                 
-        )]),
+#         )]),
 
         
-        html.Div(className='columns', children=[
-        dcc.Graph(id='pro')])
+#         html.Div(className='columns', children=[
+#         dcc.Graph(id='pro')])
 
 
 
-    ])
+#     ])
 
 
 # In[416]:
@@ -980,86 +980,86 @@ app.layout = html.Div(
         para_html(),
         dcc.Store(id='pacodata'),
         dcc.Store(id='clickpaco'),
-        html.Div(id='test_click'),
+        # html.Div(id='test_click'),
               
-        pattern_html(),
-        season_html()
+        # pattern_html(),
+        # season_html()
 
 
     ])
-@app.callback(Output('stabcontent', 'children'),
-              [Input('stabsexample', 'value')])
-def render_content(tab):
-#     return tab
-    if tab == 'stab1':
-        return stab1()
-    elif tab=='stab2': 
-        return sarima_html()
-    else:
-        return pro_html()
+# @app.callback(Output('stabcontent', 'children'),
+#               [Input('stabsexample', 'value')])
+# def render_content(tab):
+# #     return tab
+#     if tab == 'stab1':
+#         return stab1()
+#     elif tab=='stab2': 
+#         return sarima_html()
+#     else:
+#         return pro_html()
 
-@app.callback([
-    Output('pro', 'figure')
-],
-              [Input('pcrime', 'value'),
-              Input('pperiod', 'value')])
+# @app.callback([
+#     Output('pro', 'figure')
+# ],
+#               [Input('pcrime', 'value'),
+#               Input('pperiod', 'value')])
 
-def render_pro(crime, period):
+# def render_pro(crime, period):
     
 
-    return pro(crime,period)
+#     return pro(crime,period)
     
     
     
     
-@app.callback([
-    Output('stab1_line', 'figure'),
-              Output('stab1_table', 'data'),
-Output('stab1_table', 'columns')
-],
-              [Input('scrime', 'value'),
-              Input('speriod', 'value')])
+# @app.callback([
+#     Output('stab1_line', 'figure'),
+#               Output('stab1_table', 'data'),
+# Output('stab1_table', 'columns')
+# ],
+#               [Input('scrime', 'value'),
+#               Input('speriod', 'value')])
 
-def render_ftt(crime, period):
+# def render_ftt(crime, period):
     
-    f,t=ftt_result(crime, period)
+#     f,t=ftt_result(crime, period)
     
-    colums=[{"name": i, "id": i} for i in t.columns]
-    data=t.to_dict('records')
-    return f,data,colums
+#     colums=[{"name": i, "id": i} for i in t.columns]
+#     data=t.to_dict('records')
+#     return f,data,colums
 
 
-@app.callback([
-    Output('stab2_decom', 'figure'),
-              Output('stab2_par', 'data'),
-                Output('stab2_par', 'columns'),
-    Output('pred', 'figure'),
-                  Output('seco', 'data'),
-                Output('seco', 'columns'),
+# @app.callback([
+#     Output('stab2_decom', 'figure'),
+#               Output('stab2_par', 'data'),
+#                 Output('stab2_par', 'columns'),
+#     Output('pred', 'figure'),
+#                   Output('seco', 'data'),
+#                 Output('seco', 'columns'),
     
-                  Output('noseco', 'data'),
-                Output('noseco', 'columns'),
-],
-              [Input('sacrime', 'value'),
-              Input('saperiod', 'value')])
+#                   Output('noseco', 'data'),
+#                 Output('noseco', 'columns'),
+# ],
+#               [Input('sacrime', 'value'),
+#               Input('saperiod', 'value')])
 
-def render_sari(crime, period):
+# def render_sari(crime, period):
     
-    decom_fig, pra_df, se_co, nose_co, result_df=sarima_result(crime,period)
-    pra_df=pra_df.astype('str')[['order','seasonal_order','aic']]
-    pra_dfcolums=[{"name": i, "id": i} for i in pra_df.columns]
-    pra_dfdata=pra_df.to_dict('records')
+#     decom_fig, pra_df, se_co, nose_co, result_df=sarima_result(crime,period)
+#     pra_df=pra_df.astype('str')[['order','seasonal_order','aic']]
+#     pra_dfcolums=[{"name": i, "id": i} for i in pra_df.columns]
+#     pra_dfdata=pra_df.to_dict('records')
     
-    se_cocolums=[{"name": i, "id": i} for i in se_co.columns]
-    se_codata=se_co.astype('str').to_dict('records')
+#     se_cocolums=[{"name": i, "id": i} for i in se_co.columns]
+#     se_codata=se_co.astype('str').to_dict('records')
     
-    nose_cocolums=[{"name": i, "id": i} for i in nose_co.columns]
-    nose_codata=nose_co.astype('str').to_dict('records')
+#     nose_cocolums=[{"name": i, "id": i} for i in nose_co.columns]
+#     nose_codata=nose_co.astype('str').to_dict('records')
     
-    fig=px.line(result_df.astype('float'), template='seaborn')
+#     fig=px.line(result_df.astype('float'), template='seaborn')
     
-#     return decom_fig,pra_dfdata,pra_dfcolums,fig,se_codata,se_cocolums,nose_codata,nose_cocolums
-    return decom_fig, pra_dfdata,pra_dfcolums, fig,se_codata,se_cocolums,nose_codata,nose_cocolums
+# #     return decom_fig,pra_dfdata,pra_dfcolums,fig,se_codata,se_cocolums,nose_codata,nose_cocolums
+#     return decom_fig, pra_dfdata,pra_dfcolums, fig,se_codata,se_cocolums,nose_codata,nose_cocolums
 
 
 
