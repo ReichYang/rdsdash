@@ -976,8 +976,9 @@ import base64
 
 def ci(crime, time):
     print(time+'******************************')
-    print(pd.to_datetime(time)+'******************************')
-    print(pd.to_datetime(time)==pd.to_datetime('2019/11/20')+'----')
+    print(pd.to_datetime(time))
+    print('---***')
+    print(pd.to_datetime(time)==pd.to_datetime('2019/11/20'))
 
     if ((crime=='SHOOTING') & (pd.to_datetime(time)==pd.to_datetime('2019/11/20'))):
         print('default')
