@@ -921,7 +921,7 @@ def pro(crime,period):
     
     fig = m.plot_components(forecast)
     
-    return tls.mpl_to_plotly(fig)
+    return [tls.mpl_to_plotly(fig)]
     
     
 
@@ -976,7 +976,7 @@ import base64
 
 def ci(crime, time):
 
-    if (crime=='SHOOTING') & (time==dt(2019,11,23)):
+    if (crime=='SHOOTING') & (time==dt(2019,11,20)):
         print('default')
 
 
@@ -1063,7 +1063,7 @@ def ci_html():
         id='poli_date',
         min_date_allowed=dt(2014, 1, 1),
         max_date_allowed=dt(2020, 1, 1),
-        date=dt(2019, 11, 23)
+        date=dt(2019, 11, 20)
     )],
                      style={'text-align': 'center'},className='six columns'),
 
