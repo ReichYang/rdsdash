@@ -27,9 +27,7 @@ import plotly.express as px
 import dash
 import plotly.graph_objects as go
 import plotly.tools as tls
-# from tick.plot import plot_point_process
-# from tick.hawkes import (SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp,
-#                          HawkesEM, SimuHawkesSumExpKernels, HawkesSumExpKern, HawkesExpKern)
+
 from collections import Counter
 
 
@@ -48,85 +46,13 @@ with open("Police_Districts.geojson") as f1:
     dist_geojson = json.load(f1)
 
 
-# In[67]:
-
-
-# df['Datetime']=df.CrimeDate+' '+df.CrimeTime
-
-
-# In[68]:
-
-
-# df['Datetime']=pd.to_datetime(df.Datetime)
-
-
-# In[69]:
-
-
-# df['Year']=df.Datetime.dt.year
-# df['Month']=df.Datetime.dt.month
-# df['MonthName']=df.Datetime.dt.month_name()
-# df['Day']=df.Datetime.dt.day
-# df['Quarter']=df.Datetime.dt.quarter
-# df['Date']=df.Datetime.dt.date
-# df['Hour']=df.Datetime.dt.hour
-# df['Minute']=df.Datetime.dt.minute
-# df['Period']=((df.Datetime.dt.hour% 24 + 4) // 4).map({1: 'Late Night',
-#                       2: 'Early Morning',
-#                       3: 'Morning',
-#                       4: 'Noon',
-#                       5: 'Evening',
-#                       6: 'Night'})
-# df['DayofWeek']=df.Datetime.dt.weekday
-# df['WeekDay']=df.Datetime.dt.weekday.apply(lambda x: 'Weekend' if ((x==5)|(x==6)) else "Weekday")
-
-
-# In[10]:
-
-
-# test_df=pd.merge(neig,gr[(gr['DayofWeek']==0)&(gr['Period']=='Noon')], left_on='Neighborhood_New',right_on='Neighborhood_New', how='left').fillna(0)
-
-
-# In[74]:
-
-
-# df.to_pickle('cleaned_df.pickle')
-
-
-# In[83]:
-
-
 df=pd.read_pickle('cleaned_df.pickle')
-
-
-# In[85]:
-
-
-# dist.to_pickle('dist.pickle')
-
-
-# In[86]:
 
 
 neig=pd.read_pickle('neis.pickle')
 dist=pd.read_pickle('dist.pickle')
 
-
-# In[11]:
-
-
-# neig=pd.DataFrame(df.groupby('Neighborhood_New').count().reset_index()['Neighborhood_New'])
-# dist=pd.DataFrame(df.groupby('New_District').count().reset_index()['New_District'])
-
-
-# In[12]:
-
-
-# df.Year.value_counts()/len(df)* 100
-
-
-# In[228]:
-
+sdf=df[(df.Year>=2014)&(df.Year)<=2020]
 
 def intro():
     """
@@ -700,9 +626,9 @@ def stab1():
 
 def ftt_result(crime, period):
     
-    sdf=df[(df.Year>=2014)&(df.Year)<=2020]
+    # sdf=df[(df.Year>=2014)&(df.Year)<=2020]
     
-    sdf=df[df.Description==crime]
+    sdf=sdf[sdf.Description==crime]
     
     if period=='hourly':
         
@@ -809,15 +735,6 @@ def get_fftt(signal):
     return fft_output, power, freq, peaks, peak_freq, peak_power
 
 
-# In[30]:
-
-
-# tls.mpl_to_plotly
-
-
-# In[257]:
-
-
 def sarima_html():
     return html.Div(style={'text-align': 'center'},children=[
         
@@ -879,9 +796,9 @@ def sarima_html():
 
 def sarima_result(crime, period):
     
-    sdf=df[(df.Year>=2014)&(df.Year)<=2020]
+    sdf=sdf[sdf.Description==crime]
     
-    sdf=df[df.Description==crime]
+    # sdf=df[df.Description==crime]
     
     if period=='monthly':
         signal=sdf.resample('M', on='Datetime').sum()['Total Incidents']
@@ -975,9 +892,9 @@ from fbprophet import Prophet
 def pro(crime,period):
     
     
-    sdf=df[(df.Year>=2014)&(df.Year)<=2020]
-    
-    sdf=df[df.Description==crime]
+    # sdf=df[(df.Year>=2014)&(df.Year)<=2020]
+    sdf=sdf[sdf.Description==crime]
+    # sdf=df[df.Description==crime]
     
     signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
     
@@ -1052,7 +969,9 @@ import io
 import base64
 
 def ci(crime, time):
-    sdf=df[(df.Year>=2014)&(df.Year<=2020)&(df.Description==crime)]
+
+    sdf=sdf[sdf.Description==crime]
+    # sdf=df[(df.Year>=2014)&(df.Year<=2020)&(df.Description==crime)]
     
     signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
     
