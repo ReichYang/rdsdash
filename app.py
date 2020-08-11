@@ -1413,7 +1413,7 @@ def changein_sliders(values, year, crime, space, quant):
 
 if __name__ == '__main__':
 
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=800)
 
 
 
