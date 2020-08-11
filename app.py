@@ -911,9 +911,13 @@ def pro(crime,period):
         m.add_seasonality(name='monthly', period=30.5, fourier_order=5)
     if 'quarterly' in period:
         m.add_seasonality(name='quarterly', period=91.3125, fourier_order=10)
+
+
+    m.fit(df)
+
+    future = m.make_future_dataframe(periods=20)
     
-    
-    forecast = m.fit(df).predict(future)
+    forecast = m.predict(future)
     
     fig = m.plot_components(forecast)
     
