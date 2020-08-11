@@ -36,7 +36,6 @@ from collections import Counter
 # In[66]:
 
 
-df=pd.read_csv("cleaned_df.csv")
 
 
 # In[3]:
