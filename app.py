@@ -898,7 +898,7 @@ def pro(crime,period):
     
     signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
     
-    df=signal.reset_index().rename(columns={'Datetime':'DS','Total Incidents': 'Y'})
+    df=signal.reset_index().rename(columns={'Datetime':'ds','Total Incidents': 'y'})
     
     
     if 'weekly' in period:
