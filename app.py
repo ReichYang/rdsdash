@@ -987,7 +987,9 @@ def ci(crime, time):
         with open('rep.pkl', 'rb') as f:  # Overwrites any existing file.
             report=pickle.load(f)   
         
-        data = base64.b64encode(open('output.png', 'rb').read()).decode("utf8")
+        src=app.get_asset_url ('output.png')
+
+        return [report, src]
     
     else:
         sdf=subdf[subdf.Description==crime]
