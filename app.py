@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
-#!/usr/bin/env python
-# coding: utf-8
 
 import string
 import re, json
@@ -33,7 +28,7 @@ from collections import Counter
 # In[2]:
 
 
-df=pd.read_csv("cleaned_df.csv")
+df=pd.read_csv("cleaned_df.csv", low_memory=False)
 
 
 # In[3]:
@@ -58,26 +53,6 @@ df['Datetime']=df.CrimeDate+' '+df.CrimeTime
 df['Datetime']=pd.to_datetime(df.Datetime)
 
 
-# In[6]:
-
-
-df.CrimeDate
-
-
-# In[7]:
-
-
-df.CrimeTime
-
-
-# In[8]:
-
-
-df.Datetime
-
-
-# In[9]:
-
 
 df['Year']=df.Datetime.dt.year
 df['Month']=df.Datetime.dt.month
@@ -97,32 +72,11 @@ df['DayofWeek']=df.Datetime.dt.weekday
 df['WeekDay']=df.Datetime.dt.weekday.apply(lambda x: 'Weekend' if ((x==5)|(x==6)) else "Weekday")
 
 
-# In[10]:
 
-
-# test_df=pd.merge(neig,gr[(gr['DayofWeek']==0)&(gr['Period']=='Noon')], left_on='Neighborhood_New',right_on='Neighborhood_New', how='left').fillna(0)
-
-
-# In[ ]:
-
-
-
-
-
-# In[11]:
 
 
 neig=pd.DataFrame(df.groupby('Neighborhood_New').count().reset_index()['Neighborhood_New'])
 dist=pd.DataFrame(df.groupby('New_District').count().reset_index()['New_District'])
-
-
-# In[12]:
-
-
-# df.Year.value_counts()/len(df)* 100
-
-
-# In[13]:
 
 
 def intro():
@@ -175,26 +129,6 @@ def intro_tabone():
         
     ])
 
-# def intro_tabtwo():
-#     return html.Div(children=[
-#         html.Div('In this tab. I will illustrate how to use this visualization tool.')
-        
-#     ])
-
-
-# In[15]:
-
-
-[{'label':i.title(),'value':i}for i in df.Description.unique()]
-
-
-# In[ ]:
-
-
-
-
-
-# In[16]:
 
 
 def intro_tabtwo():
@@ -248,8 +182,6 @@ def intro_tabtwo():
         ]
     )
 
-
-# In[17]:
 
 
 def year_slider():
@@ -314,10 +246,6 @@ slider_map={'{"index":1,"type":"slider"}':'Month',
 '{"index":6,"type":"slider"}':'Hour',
 '{"index":7,"type":"slider"}':'Period'}
 
-# {"index":1,"type":"slider"}
-
-
-# In[19]:
 
 
 def make_sliders(time):
@@ -437,20 +365,6 @@ def para_html():
         dcc.Loading(dcc.Graph(id='paco'))])
 
 
-# In[21]:
-
-
-{'Late Night':1,
-                       'Early Morning':2,
-                       'Morning':3,
-                       'Noon':4,
-                       'Evening':5,
-                        'Night':6}
-
-
-# In[22]:
-
-
 def subset_df(crime, space, year, time):
     
     #filter crime
@@ -463,7 +377,7 @@ def subset_df(crime, space, year, time):
     
     grouping_attr.extend(['Description','Total Incidents'])  
     
-    print(grouping_attr)
+ 
     subdf=new_df.loc[:,grouping_attr]
     
     return subdf
@@ -485,10 +399,6 @@ def make_paco(df, quant):
     return fig, fig.data[0]['dimensions']
     
     
-    
-
-
-# In[23]:
 
 
 def pattern_html():
@@ -564,11 +474,7 @@ def pattern_html():
     )
 
 
-# In[24]:
-
-
-from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, fpmax, fpgrowth, association_rules
+from mlxtend.frequent_patterns import fpmax
 
 def pattern(df, crime):
     
@@ -587,12 +493,9 @@ def pattern(df, crime):
     return rules
 
 
-# In[26]:
-
 
 def filter_df(newdf,times):
-    print(times)
-    print(newdf)
+
     for t in times.items():
         if t[0]=='Weekday':
             real_val={1:'Weekday',2:'Weekend'}[t[1]]
@@ -612,8 +515,6 @@ def filter_df(newdf,times):
     return newdf
     
 
-
-# In[219]:
 
 
 def season_html():
@@ -683,9 +584,6 @@ def stab1():
 
 
     ])
-
-
-# In[255]:
 
 
 def ftt_result(crime, period):
@@ -806,13 +704,6 @@ def get_fftt(signal):
     return fft_output, power, freq, peaks, peak_freq, peak_power
 
 
-# In[ ]:
-
-
-# tls.mpl_to_plotly
-
-
-# In[386]:
 
 
 def sarima_html():
