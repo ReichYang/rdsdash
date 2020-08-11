@@ -972,15 +972,22 @@ import splot
 import io
 import base64
 
-with open('sci.pkl', 'rb') as f:  # Overwrites any existing file.
-        sci=pickle.load(f)   
+from PIL import Image
+
+
 
 
 def ci(crime, time):
 
     if (crime=='SHOOTING') & (time==dt(2019,11,23)):
+        print('default')
 
-        ci=sci
+
+        with open('rep.pkl', 'rb') as f:  # Overwrites any existing file.
+            report=pickle.load(f)   
+        
+        data = base64.b64encode(open('output.png', 'rb').read())
+    
     else:
         sdf=subdf[subdf.Description==crime]
         # sdf=df[(df.Year>=2014)&(df.Year<=2020)&(df.Description==crime)]
@@ -993,14 +1000,14 @@ def ci(crime, time):
         
         ci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
     
-    fig=splot.plot(ci)
-    
-    report=ci.summary(output='report')
-    
-    buf = io.BytesIO() # in-memory files
-    fig.savefig(buf, format = "png") # save to the above file object
-    data = base64.b64encode(buf.getbuffer()).decode("utf8") # encode to html elements
-    plt.close()
+        fig=splot.plot(ci)
+        
+        report=ci.summary(output='report')
+        
+        buf = io.BytesIO() # in-memory files
+        fig.savefig(buf, format = "png") # save to the above file object
+        data = base64.b64encode(buf.getbuffer()).decode("utf8") # encode to html elements
+        plt.close()
     
     
     return [report,"data:image/png;base64,{}".format(data)]
