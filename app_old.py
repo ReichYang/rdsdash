@@ -1,42 +1,34 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[190]:
-
-
-#!/usr/bin/env python
-# coding: utf-8
 
 import string
-import re
+import re, json
 
 import datetime
 import numpy as np
 import pandas as pd
 
-import dash_bio as dashbio
+# import dash_bio as dashbio
 import dash_table
 from dash import no_update
 from dash.dependencies import Input, Output, ALL, State
 import dash_html_components as html
 import dash_core_components as dcc
 from jupyter_dash import JupyterDash
-import dash_bootstrap_components as dbc
 
 import plotly.express as px
 import dash
 import plotly.graph_objects as go
 import plotly.tools as tls
-# from tick.plot import plot_point_process
-# from tick.hawkes import (SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp,
-#                          HawkesEM, SimuHawkesSumExpKernels, HawkesSumExpKern, HawkesExpKern)
+
 from collections import Counter
 
 
-# In[66]:
+# In[2]:
 
 
-df=pd.read_csv("cleaned_df.csv")
+df=pd.read_pickle("cleaned_df.pickle")
 
 
 # In[3]:
@@ -49,19 +41,17 @@ with open("Police_Districts.geojson") as f1:
     dist_geojson = json.load(f1)
 
 
-# In[67]:
+# In[4]:
 
 
 # df['Datetime']=df.CrimeDate+' '+df.CrimeTime
 
 
-# In[68]:
+# # In[5]:
 
 
 # df['Datetime']=pd.to_datetime(df.Datetime)
 
-
-# In[69]:
 
 
 # df['Year']=df.Datetime.dt.year
@@ -82,51 +72,11 @@ with open("Police_Districts.geojson") as f1:
 # df['WeekDay']=df.Datetime.dt.weekday.apply(lambda x: 'Weekend' if ((x==5)|(x==6)) else "Weekday")
 
 
-# In[10]:
 
-
-# test_df=pd.merge(neig,gr[(gr['DayofWeek']==0)&(gr['Period']=='Noon')], left_on='Neighborhood_New',right_on='Neighborhood_New', how='left').fillna(0)
-
-
-# In[74]:
-
-
-# df.to_pickle('cleaned_df.pickle')
-
-
-# In[83]:
-
-
-df=pd.read_pickle('cleaned_df.pickle')
-
-
-# In[85]:
-
-
-# dist.to_pickle('dist.pickle')
-
-
-# In[86]:
 
 
 neig=pd.read_pickle('neis.pickle')
 dist=pd.read_pickle('dist.pickle')
-
-
-# In[11]:
-
-
-# neig=pd.DataFrame(df.groupby('Neighborhood_New').count().reset_index()['Neighborhood_New'])
-# dist=pd.DataFrame(df.groupby('New_District').count().reset_index()['New_District'])
-
-
-# In[12]:
-
-
-# df.Year.value_counts()/len(df)* 100
-
-
-# In[228]:
 
 
 def intro():
@@ -136,7 +86,7 @@ def intro():
     return html.Div(
         id="description-card",
         children=[
-            html.H3("Baltimore Crime Data Analysis"),
+            html.H3("Baltimore Victim-based Crime Data"),
             intro_tabone(),
             intro_tabtwo()
 #             dcc.Tabs(id='tabs-example', value='tab-1', children=[
@@ -168,46 +118,17 @@ def intro():
     )
 
 
-# In[229]:
+# In[14]:
 
 
 def intro_tabone():
     return html.Div(children=[
-         html.Blockquote(children=["This dashboard is the visual deliverale for the job talk of the Research Data Scientist at \
-         National Police Foundation.",'This web application is handcrafted by ',
-                                html.A("Yukun", href='#contact_info')]),
-        html.Br(),
-            html.H4('Instructions'),
-            html.Div(children=[
-                html.P("Every plot can be zoomed and selected, along with hovering tooltips. Despite these basics, each\
-                section will have its own interactions. \
-                Despite these basics, it also supports other kinds of user inputs and interactions. Pleaase put your mouse on the ",style={"display":"inline"}),
-                        html.I(className="fas fa-question-circle fa-lg", style={"display":"inline"}),
-                html.P(' icon aside the title of each section to get more information. For this section, I render a way to find the space-time pattern of crimes.',style={"display":"inline"}),
-                 html.Li(
-                        'Adding spatial or temporal features into the pattern mining below'),
-                    html.Li('Showing the map at specific time by changing the values of the sliders'),
-                html.Li('Clicking on the tiles in the parallel cord plot to automatically change the silder and the map')
-            ])
-
+         html.Blockquote("Welcome to the Clinical Analytics Dashboard"),
+         html.P("This dashboard is the visual deliverale for the Research Data Scientist at National Police Foundation.")
         
         
     ])
 
-# def intro_tabtwo():
-#     return html.Div(children=[
-#         html.Div('In this tab. I will illustrate how to use this visualization tool.')
-        
-#     ])
-
-
-# In[ ]:
-
-
-
-
-
-# In[208]:
 
 
 def intro_tabtwo():
@@ -238,7 +159,7 @@ def intro_tabtwo():
                         {'label': 'Weekday or Weekend',
                          'value': 'weekday'},
                         {'label': 'Hour', 'value': 'hour'},
-#                         {'label': 'Minute', 'value': 'minute'},
+                        {'label': 'Minute', 'value': 'minute'},
                         {'label': 'Time of Day', 'value': 'period'},
                         {'label':'Quarter','value':'quarter'}
 
@@ -247,7 +168,7 @@ def intro_tabtwo():
                     multi=True
                 ),
                     html.Br(),
-                    html.Strong("Select the Type of Crime(s)"),
+                    html.Strong("Select the Type of Crime(S)"),
                     dcc.Dropdown(
                     id='crime_type',
                     options=[{'label':i.title(),'value':i}for i in df.Description.unique()],
@@ -261,8 +182,6 @@ def intro_tabtwo():
         ]
     )
 
-
-# In[17]:
 
 
 def year_slider():
@@ -327,10 +246,6 @@ slider_map={'{"index":1,"type":"slider"}':'Month',
 '{"index":6,"type":"slider"}':'Hour',
 '{"index":7,"type":"slider"}':'Period'}
 
-# {"index":1,"type":"slider"}
-
-
-# In[19]:
 
 
 def make_sliders(time):
@@ -418,45 +333,36 @@ def make_sliders(time):
     return sliders
 
 
-# In[235]:
+# In[20]:
 
 
 def para_html():
     return html.Div(id='para', className="columns pretty_container", children=[
-        html.Div(style={"display": "inline-flex"}, children=[html.H5('Parallel Coordinates of the Crime Acticity'),
-                                                             html.Div(children=[
-                                                                 html.I(
-                                                                     className="fas fa-question-circle fa-lg", id="target"),
-                                                                 dbc.Tooltip("How do we read this? Bascially, each ploly line represents a combination of space-time patterns, and the color indicates the frequency of this pattern.\
-                                Each variable in the data set is represented by a column of rectangles, \
-                                where each rectangle corresponds to a discrete value taken on by that variable.\
-                                     The relative heights of the rectangles reflect the relative\
-                                          frequency of occurrence of the corresponding value. ", target="target",
-                                                                             style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
-                                                             ],
-                    className="p-5 text-muted"
-                    )
+        html.Div(style={"display": "inline-flex"}, children=[html.H5('Parallel Coordinates of the Flow of Rej. Emails.'),
+#                                                              html.Div(children=[
+#                                                                  html.I(
+#                                                                      className="fas fa-question-circle fa-lg", id="target"),
+#                                                                  dbc.Tooltip("How do we read this? Bascially, each ploly line represents a combination of day/time patterns, and the color indicates the frequency of this pattern.\
+#                                 Each variable in the data set is represented by a column of rectangles, \
+#                                 where each rectangle corresponds to a discrete value taken on by that variable.\
+#                                      The relative heights of the rectangles reflect the relative\
+#                                           frequency of occurrence of the corresponding value. ", target="target",
+#                                                                              style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
+#                                                              ],
+#                     className="p-5 text-muted"
+#                     )
                                                             ]),
 
-        html.Div("This plot is automatically generated based on the spaial/temporal features you selected to add.\
-                        Each tile is the most frequent space-time pattern of crime activities. You can change the number\
-                        below to show the patterns that is more frequent than X% of other patterns, a.k.a. the top (100-X)% pattern." ,
+        html.Div("Let's highlight the most prominent streamline of the email flow. \
+                        It could come in handy when we observed some trends in the data. \
+                This plot will update automatically with the Date/Day/Hour you selected in the Control widgets. ☝️",
                  style={'margin': "10px"}),
-        html.Div(children=[
-            html.Strong('Please select the quantile number here:'),
-            html.Br(),
-                    html.Div(dcc.Input(
+        html.Div(dcc.Input(
             id="dtrue", type="number",
             debounce=True, placeholder="Debounce True",value=98
-        ))
-        ], style={'text-align': 'center'})
-,
-        html.Div(id='quant', children=[], style={'display':'None'}),
-        html.Br(style={'margin':'10px'}),
+        )),
+        html.Div(id='quant', children=[]),
         dcc.Loading(dcc.Graph(id='paco'))])
-
-
-# In[22]:
 
 
 def subset_df(crime, space, year, time):
@@ -471,7 +377,7 @@ def subset_df(crime, space, year, time):
     
     grouping_attr.extend(['Description','Total Incidents'])  
     
-    print(grouping_attr)
+ 
     subdf=new_df.loc[:,grouping_attr]
     
     return subdf
@@ -493,31 +399,32 @@ def make_paco(df, quant):
     return fig, fig.data[0]['dimensions']
     
     
-    
-
-
-# In[230]:
 
 
 def pattern_html():
-    return html.Div(id='', className='columns pretty_container', children=[
+    return html.Div(id='temperal pro', className='columns pretty_container', children=[
         html.Div(style={"display": "inline-flex"}, children=[
             html.H5("Maximal Frequent Pattern Mining",
                     style={'margin-left': '10px'}),
             html.Div(children=[
                 html.I(
                     className="fas fa-question-circle fa-lg", id="target2"),
-                dbc.Tooltip("How can we interact with this? 1) Filter the size of the pattern--Larger pattern will include more dimensions; \n 2)\
-                                Selecting how many patterns you want to see in the bar chart below;\n.", target="target2",
-                            style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
+#                 dbc.Tooltip("How can we interact with this? 1) Changing the kernel of the model to see the other kind of results; \n 2)\
+#                                 Selecting how many days you want to use to predict future email events;\n 3)\
+#                                     Showing the actual predicted result by hover on the dots in the line chart.", target="target2",
+#                             style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
             ],
                 className="p-5 text-muted"
             )]),
 
         html.P(
-            children="An frequent itemset/pattern is defined as a set of attributes whose support is greater than or equal to a Minimum Support threshold. \
-            Support is the frequency of occurrence of an itemset. Here I used the FPMax algorithm to generate the patterns.\
-                    The support threshold is 0.001. The maximal size of the pattern is set as 6.",
+            children="A Temporal Process is a kind of random process whose realization consists of discrete events \
+                    localized in time. Compared with \
+                    traditional Time-Seris, each data entry was allocated in different time interval. The scattering nature of receiving\
+                    an email fits better with a Temporal Process Analysis. \n \
+                    A very popular kind of termporal process is the Hawkes process, which could be consider\
+                    as an 'auto-regression' type of process. Here I used the Hawkes Process to simulate the events.\
+                    You can select the Kernal and the days to forecast below.👇",
             style={'margin': '10px'}
         ),
         html.Div(
@@ -567,9 +474,6 @@ def pattern_html():
     )
 
 
-# In[212]:
-
-
 from mlxtend.frequent_patterns import fpmax
 
 def pattern(df, crime):
@@ -583,18 +487,15 @@ def pattern(df, crime):
     
     rules['len']=rules.itemsets.apply(len)
     rules['itemsets']=rules.itemsets.apply(list)
-#     rules.sort_values('support', ascending=False)
+    rules.sort_values('support', ascending=False)
     rules=rules.sort_values('support', ascending=False).reset_index()
     
     return rules
 
 
-# In[213]:
-
 
 def filter_df(newdf,times):
-#     print(times)
-#     print(newdf)
+
     for t in times.items():
         if t[0]=='Weekday':
             real_val={1:'Weekday',2:'Weekend'}[t[1]]
@@ -610,40 +511,43 @@ def filter_df(newdf,times):
             
         else:
             newdf=newdf[newdf[t[0]]==t[1]]
-#             print(newdf)
+            print(newdf)
     return newdf
     
 
 
-# In[255]:
-
 
 def season_html():
-    return html.Div(id='season', className='columns pretty_container',children=[
+    return html.Div(id='season', className='columns pretty_container', children=[
         html.Div(style={"display": "inline-flex"}, children=[
-            html.H5("Detecting Seasonality",
+            html.H5("Seasonality Mining",
                     style={'margin-left': '10px'}),
             html.Div(children=[
                 html.I(
-                    className="fas fa-question-circle fa-lg",id="target3"),
-                dbc.Tooltip("How can we interact with this? 1) Selecting the tab by changing the seasonality detection approcah; \n 2)\
-                                Selecting the time interval of the input data;\n 3)\
-                                    Selecting the type of crime to model.", target="target3",
-                            style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
+                    className="fas fa-question-circle fa-lg"),
+#                 dbc.Tooltip("How can we interact with this? 1) Changing the kernel of the model to see the other kind of results; \n 2)\
+#                                 Selecting how many days you want to use to predict future email events;\n 3)\
+#                                     Showing the actual predicted result by hover on the dots in the line chart.", target="target2",
+#                             style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
             ],
                 className="p-5 text-muted"
             )]),
 
-        html.P("I have explored three ways to find and test the seasonality of a data. \
-        Fourier transform as a way to explore all possible seasonalities Seasonal ARIMA to model one seasonality in the data \
-            In addtion, I also presented modelling multiple seasonalites in the data using Facebook's Prophet.",
+        html.P(
+            children="A Temporal Process is a kind of random process whose realization consists of discrete events \
+                    localized in time. Compared with \
+                    traditional Time-Seris, each data entry was allocated in different time interval. The scattering nature of receiving\
+                    an email fits better with a Temporal Process Analysis. \n \
+                    A very popular kind of termporal process is the Hawkes process, which could be consider\
+                    as an 'auto-regression' type of process. Here I used the Hawkes Process to simulate the events.\
+                    You can select the Kernal and the days to forecast below.👇",
             style={'margin': '10px'}
         ),
         html.Div(children=[ 
             dcc.Tabs(id='stabsexample', value='stab1', children=[
                 dcc.Tab(label='Fourier', value='stab1'),
                 dcc.Tab(label='SARIMA', value='stab2'),
-                 dcc.Tab(label='Prophet by Faebook', value='stab3')]),
+                 dcc.Tab(label='TABTS', value='stab3')]),
         html.Div(id='stabcontent')])
 
         
@@ -651,25 +555,15 @@ def season_html():
     ) 
 
 
-# In[256]:
-
 
 def stab1():
     return html.Div(children=[
-        html.Div(children=[
-            html.Strong('Please select the type of crime to model'),
-            dcc.Dropdown(
+        html.Div(children=[dcc.Dropdown(
             id='scrime',
             options=[{'label': i.title(), 'value': i}
                      for i in df.Description.unique()],
             value='SHOOTING'
-        )], style={'text-align': 'center'},
-                className='six columns')
-        
-        ,
-        
-        html.Div(children=[
-            html.Strong('Please select the type of time series to generate'),
+        ),
             dcc.RadioItems(
             options=[
                 {'label': 'Construct Hourly Time Series', 'value': 'hourly'},
@@ -678,25 +572,16 @@ def stab1():
             ],
             value='hourly',
                 id='speriod'
-        )
-        
-        ], style={'text-align': 'center'},
-                className='six columns'),
-
-
+        )]),
         html.Div(className='six columns', children=[
-                 dcc.Loading(dcc.Graph(id='stab1_line'))]),
+                 dcc.Graph(id='stab1_line')]),
         html.Div(className='six columns',id='stab1_df', children=[
-        html.H4('Prominent Frequncies',style={'text-align': 'center'}),
         dash_table.DataTable(
                 id='stab1_table',page_size= 15)])
 
 
 
     ])
-
-
-# In[249]:
 
 
 def ftt_result(crime, period):
@@ -728,7 +613,10 @@ def ftt_result(crime, period):
         f.update_layout(margin={"l":0,"b":0},legend=dict(
             orientation="h"))
 
- 
+        ftt_table=dash_table.DataTable(
+                id='stab1_table',
+                columns=[{"name": i, "id": i} for i in output.columns],
+                data=output.to_dict('records'))
 
     elif period=='daily':
         
@@ -753,6 +641,10 @@ def ftt_result(crime, period):
         f.update_layout(margin={"l":0,"b":0},legend=dict(
             orientation="h"))
 
+        ftt_table=dash_table.DataTable(
+                id='stab1_table',
+                columns=[{"name": i, "id": i} for i in output.columns],
+                data=output.to_dict('records'))
 
         
     else:
@@ -782,7 +674,7 @@ def ftt_result(crime, period):
     return f, output
 
 
-# In[29]:
+# In[232]:
 
 
 from scipy import fft
@@ -810,32 +702,16 @@ def get_fftt(signal):
     return fft_output, power, freq, peaks, peak_freq, peak_power
 
 
-# In[30]:
-
-
-# tls.mpl_to_plotly
-
-
-# In[257]:
 
 
 def sarima_html():
-    return html.Div(style={'text-align': 'center'},children=[
-        
-            html.Div(children=[
-            html.Strong('Please select the type of crime to model'),
-            dcc.Dropdown(
+    return html.Div(children=[
+        html.Div(children=[dcc.Dropdown(
             id='sacrime',
             options=[{'label': i.title(), 'value': i}
                      for i in df.Description.unique()],
             value='SHOOTING'
-        )], style={'text-align': 'center'},
-                className='six columns')
-        
-        ,
-        
-        html.Div(children=[
-            html.Strong('Please select the type of time series to generate'),
+        ),
             dcc.RadioItems(
             options=[
                 {'label': 'Construct Daily Time Series', 'value': 'daily'},
@@ -844,38 +720,28 @@ def sarima_html():
             ],
             value='quarterly',
                 id='saperiod'
-        )
-        
-        ], style={'text-align': 'center'},
-                className='six columns'),
-        
+        )]),
         html.Div(className='six columns', children=[
-            html.Strong('Decomposition of the Time Series'),
-                 dcc.Loading(dcc.Graph(id='stab2_decom'))]),
+                 dcc.Graph(id='stab2_decom')]),
         html.Div(className='six columns', children=[
-                     html.Strong('Model Comparison of Seasonal/Non-Seasonal Models'),
         dash_table.DataTable(
                 id='stab2_par',page_size= 15)]),
-        html.Br(),
-        html.Br(),
+        
         html.Div(className='columns', children=[
-                     html.Strong('Model Performance on the Testing Set'),
-        dcc.Loading(dcc.Graph(id='pred'))]),
+        dcc.Graph(id='pred')]),
         
         html.Div(className='six columns', children=[
-                     html.Strong('Seasonal Model Coef.'),
         dash_table.DataTable(
                 id='seco',page_size= 15)]),
-        html.Div(className='six columns', children=[html.Strong('None-Seasonal Model Coef.'),
+        html.Div(className='six columns', children=[
         dash_table.DataTable(
-            
                 id='noseco',page_size= 15)])
 
 
     ])
 
 
-# In[241]:
+# In[388]:
 
 
 def sarima_result(crime, period):
@@ -903,7 +769,7 @@ def sarima_result(crime, period):
     
 
 
-# In[33]:
+# In[381]:
 
 
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -915,7 +781,7 @@ def decom(signal):
     return n_fig
 
 
-# In[251]:
+# In[385]:
 
 
 import pmdarima as pm
@@ -950,6 +816,8 @@ def srima_fit(signal, m):
     nose_co=pd.read_html(non_seasonal_model.summary().tables[1].as_html(), header=0, index_col=0)[0]
     
     
+    
+    
     train=signal[:int(0.8*(len(signal)))]
     test=signal[int(0.8*(len(signal))):]
     
@@ -966,10 +834,10 @@ def srima_fit(signal, m):
     
     result_df=pd.concat([test,future_forecast1,future_forecast2],axis=1)
     
-    return pra_df,se_co.reset_index(),nose_co.reset_index(),result_df
+    return pra_df,se_co,nose_co,result_df
 
 
-# In[177]:
+# In[413]:
 
 
 from fbprophet import Prophet
@@ -981,8 +849,6 @@ def pro(crime,period):
     sdf=df[df.Description==crime]
     
     signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
-    
-    df=signal.reset_index().rename(columns={'Datetime':'DS','Total Incidents': 'Y'})
     
     
     if 'weekly' in period:
@@ -1006,7 +872,7 @@ def pro(crime,period):
     
 
 
-# In[258]:
+# In[414]:
 
 
 def pro_html():
@@ -1038,118 +904,14 @@ def pro_html():
     ])
 
 
-# In[ ]:
-
-
-
-
-
-# In[263]:
-
-
-from causalimpact import CausalImpact
-import splot
-import io
-import base64
-
-def ci(crime, time):
-    sdf=df[(df.Year>=2014)&(df.Year<=2020)&(df.Description==crime)]
-    
-    signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
-    
-    
-    post=signal[signal.index>pd.to_datetime(time)]
-    pre=signal[signal.index<pd.to_datetime(time)]
-    
-    ci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
-    
-    fig=splot.plot(ci)
-    
-    report=ci.summary(output='report')
-    
-    buf = io.BytesIO() # in-memory files
-    fig.savefig(buf, format = "png") # save to the above file object
-    data = base64.b64encode(buf.getbuffer()).decode("utf8") # encode to html elements
-    plt.close()
-    
-    
-    return [report,"data:image/png;base64,{}".format(data)]
-    
-
-
-# In[264]:
-
-
-from datetime import datetime as dt
-
-
-def ci_html():
-    return html.Div(className='columns pretty_container', children=[
-        
-                html.Div(style={"display": "inline-flex"}, children=[
-            html.H5("Policy Evaluation",
-                    style={'margin-left': '10px'}),
-            html.Div(children=[
-                html.I(
-                    className="fas fa-question-circle fa-lg",id="target5"),
-                dbc.Tooltip("How can we interact with this? 1) Selecting the type of crime to model; \n 2)\
-                                Selecting the policy execution date;.", target="target5",
-                            style={"max-width": "400px", "padding": ".25rem .5rem", "color": "#fff", "text-align": "center", "background-color": "#000", "border-radius": ".25rem"}),
-            ],
-                className="p-5 text-muted"
-            )]),
-
-        html.P("In this section, I will present the result of Bayesian structural time series, similar to Interrupted Time Series Analysis. You will see the pre-post intervention plots and a summary report.",
-            style={'margin': '10px'}
-        ),
-        
-
-
-#                 html.P(
-#                     children="A Temporal Process is a kind of random process whose realization consists of discrete events \
-#                     localized in time. Compared with \
-#                     traditional Time-Seris, each data entry was allocated in different time interval. The scattering nature of receiving\
-#                     an email fits better with a Temporal Process Analysis. \n \
-#                     A very popular kind of termporal process is the Hawkes process, which could be consider\
-#                     as an 'auto-regression' type of process. Here I used the Hawkes Process to simulate the events.\
-#                     You can select the Kernal and the days to forecast below.👇",
-#                     style={'margin': '10px'}
-#                 ),
-             html.Div(children=[
-                 html.Strong('Select the Type of Crime'),dcc.Dropdown(
-            id='cicrime',
-            options=[{'label': i.title(), 'value': i}
-                     for i in df.Description.unique()],
-            value='SHOOTING'
-        )],style={'text-align': 'center'},className='six columns'),
-        
-            html.Div(children=[
-                 html.Strong('Select the Date of Policy Execution'),
-    dcc.DatePickerSingle(
-        id='poli_date',
-        min_date_allowed=dt(2014, 1, 1),
-        max_date_allowed=dt(2020, 1, 1),
-        date=dt(2019, 11, 23)
-    )],
-                     style={'text-align': 'center'},className='six columns'),
-
-                html.Br(),
-                html.Div(className='columns',style={'text-align': 'center'}, children=html.Img(id='static', src='out.png')),
-                html.Div(className='columns mini_container',style={'text-align': 'center'}, id='rep',children=[
-
-                    ]
-                    )
-                               ])
-
-
-# In[266]:
+# In[416]:
 
 
 # %tb
 # app = dash.Dash(__name__, external_stylesheets=["https://codepen.io/chriddyp/pen/bWLwgP.css",
 #                                                     "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
 app = dash.Dash(__name__, external_stylesheets=["https://codepen.io/chriddyp/pen/bWLwgP.css",
-                                                 "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0",
+                                                "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0",
                                                 "https://use.fontawesome.com/releases/v5.10.2/css/all.css"])
 server = app.server
 app.config.suppress_callback_exceptions = True
@@ -1169,26 +931,33 @@ app.layout = html.Div(
             [
                 html.Div(
                     [html.H6(),
-                     html.P("No. of Years Selected"),
-                     html.Strong(id="years_selected")],
+                     html.P("No. of Days Selected"),
+                     html.Strong(id="days_selected")],
                     id="days",
                     className="mini_container",
                 ),
                 html.Div(
                     [html.H6(), html.P(
-                        "No. of Incidents in the Period"),
+                        "No. of Letters Received in the Period"),
                      html.Strong(id="total")],
 
                     className="mini_container",
                 ),
                 html.Div(
                     [html.H6(), html.P(
-                        "The Dimension You Selected"),
-                     html.Strong(id="click_pa")],
+                        "Peak Day and Hour"),
+                     html.Strong(id="peak_date")],
 
                     className="mini_container",
-                )
-            ],
+                ),
+                html.Div(
+                    [html.H6(id="pn"), html.P(
+                        "Rej Letters Peak Volume"),
+                     html.Strong(id="peak_num")],
+
+                    className="mini_container",
+                ),
+            ], 
             id="info-container",
             className="row container-display",
         ),
@@ -1212,28 +981,10 @@ app.layout = html.Div(
         html.Div(id='test_click'),
               
         pattern_html(),
-        season_html(),
-            ci_html()
+        season_html()
 
 
     ])
-
-    
-@app.callback([
-    Output('static', 'src'),
-              Output('rep', 'children'),
-
-],
-              [Input('cicrime', 'value'),
-              Input('poli_date', 'date')])
-
-def render_ci(crime, date):
-    
-    rep,src=ci(crime,date)
-    
-    
-    return [src,rep]
-
 @app.callback(Output('stabcontent', 'children'),
               [Input('stabsexample', 'value')])
 def render_content(tab):
@@ -1310,19 +1061,7 @@ def render_sari(crime, period):
 
 
 
-@app.callback(Output("click_pa", 'children'),
-              [Input('clickpaco', 'data')])
-def change_pattern(clickpaco):
-    found = False
-    if clickpaco == None:
-        return no_update
-    return_s=''
-    for k, v in clickpaco.items():
-        s='{}->{} || '.format(k,v)
-        return_s=return_s+s
-    return return_s
-    if found == False:
-        return no_update
+
 
 @app.callback(Output({"index": 7, "type": "slider"}, 'value'),
               [Input('clickpaco', 'data')])
@@ -1532,9 +1271,7 @@ def update_map(values, year, crime, space):
         return [mapf]
 
 @app.callback([Output('paco', 'figure'),
-               Output('pacodata', 'data'),
-               Output('years_selected','children'),
-               Output('total','children')
+               Output('pacodata', 'data')
                ],
               [Input({'type': 'slider', 'index': ALL}, 'value'),
                Input('year_slider', 'value'),
@@ -1550,12 +1287,10 @@ def changein_sliders(values, year, crime, space, quant):
             time[slider_map[key.replace('.value', '')]] = value
 
     subdf = subset_df(crime, space, year, time)
-    
-    total=subdf['Total Incidents'].sum()
 
     paco, pacodata = make_paco(subdf, quant/100.0)
 
-    return paco, pacodata, year[-1]-year[0],total
+    return paco, pacodata
 
 
 # @app.callback([Output('test_click', 'children')],
@@ -1567,11 +1302,7 @@ def changein_sliders(values, year, crime, space, quant):
 
 if __name__ == '__main__':
 
-    app.run_server(debug=True, port=8100)
-
-
-
-
+    app.run_server(debug=True, port=800)
 
 
 
