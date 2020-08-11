@@ -1018,7 +1018,7 @@ def ci(crime, time):
 
 
 from datetime import datetime as dt
-
+ 
 
 def ci_html():
     return html.Div(className='columns pretty_container', children=[
