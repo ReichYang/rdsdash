@@ -974,8 +974,8 @@ import base64
 
 signal=subdf[subdf.Description=='SHOOTING'].resample('D', on='Datetime').sum()['Total Incidents']
 
-post=signal[signal.index>pd.to_datetime(time)]
-pre=signal[signal.index<pd.to_datetime(time)]
+post=signal[signal.index>pd.to_datetime('2019/11/23')]
+pre=signal[signal.index<pd.to_datetime('2019/11/23')]
     
 sci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
     
