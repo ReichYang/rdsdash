@@ -555,8 +555,6 @@ def season_html():
     ) 
 
 
-# In[257]:
-
 
 def stab1():
     return html.Div(children=[
