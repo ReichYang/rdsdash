@@ -1213,7 +1213,18 @@ app.layout = html.Div(
               
         pattern_html(),
         season_html(),
-            ci_html()
+            ci_html(),
+        html.Div(id='contact_info', style={'text-align': 'center'}, className='pretty_container twelve columns', children=[
+                'Thanks for playing with it! You can contact me via my ',
+                html.A(
+                    'LinkedIn', href='https://www.linkedin.com/in/yukun-yang-1044ab157/', target="_blank"),
+                ', or ',
+                html.A('Personal Website',
+                    href='http://www.yukunyang.info', target="_blank"),
+                '. You can also Email me at ',
+                html.A('contact@yukunyang.info',
+                    href='mailto:contact@yukunyang.info', target="_blank")
+            ])
 
 
     ])
