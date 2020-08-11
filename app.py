@@ -1068,7 +1068,7 @@ app.layout = html.Div(
 
                     className="mini_container",
                 ),
-            ],
+            ], 
             id="info-container",
             className="row container-display",
         ),
