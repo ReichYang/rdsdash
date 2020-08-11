@@ -975,7 +975,7 @@ import base64
 
 
 def ci(crime, time):
-
+    print(time+'******************************')
     if (crime=='SHOOTING') & (time==dt(2019,11,20)):
         print('default')
 
