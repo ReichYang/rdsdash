@@ -52,7 +52,7 @@ df=pd.read_pickle('cleaned_df.pickle')
 neig=pd.read_pickle('neis.pickle')
 dist=pd.read_pickle('dist.pickle')
 
-sdf=df[(df.Year>=2014)&(df.Year)<=2020]
+subdf=df[(df.Year>=2014)&(df.Year)<=2020]
 
 def intro():
     """
@@ -628,7 +628,7 @@ def ftt_result(crime, period):
     
     # sdf=df[(df.Year>=2014)&(df.Year)<=2020]
     
-    sdf=sdf[sdf.Description==crime]
+    sdf=subdf[subdf.Description==crime]
     
     if period=='hourly':
         
@@ -796,7 +796,7 @@ def sarima_html():
 
 def sarima_result(crime, period):
     
-    sdf=sdf[sdf.Description==crime]
+    sdf=subdf[subdf.Description==crime]
     
     # sdf=df[df.Description==crime]
     
@@ -893,7 +893,7 @@ def pro(crime,period):
     
     
     # sdf=df[(df.Year>=2014)&(df.Year)<=2020]
-    sdf=sdf[sdf.Description==crime]
+    sdf=subdf[subdf.Description==crime]
     # sdf=df[df.Description==crime]
     
     signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
@@ -970,7 +970,7 @@ import base64
 
 def ci(crime, time):
 
-    sdf=sdf[sdf.Description==crime]
+    sdf=subdf[subdf.Description==crime]
     # sdf=df[(df.Year>=2014)&(df.Year<=2020)&(df.Description==crime)]
     
     signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
