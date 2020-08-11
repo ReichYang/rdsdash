@@ -972,13 +972,8 @@ import splot
 import io
 import base64
 
-signal=subdf[subdf.Description=='SHOOTING'].resample('D', on='Datetime').sum()['Total Incidents']
-
-post=signal[signal.index>pd.to_datetime('2019/11/23')]
-pre=signal[signal.index<pd.to_datetime('2019/11/23')]
-    
-sci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
-    
+with open('sci.pkl', 'rb') as f:  # Overwrites any existing file.
+        sci=pickle.load(f)   
 
 
 def ci(crime, time):
