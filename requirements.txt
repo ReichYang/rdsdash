@@ -16,5 +16,5 @@ dash_bio==0.4.8
 dash==1.14.0
 fbprophet==0.6
 gunicorn
-lmxl
+lxml
 
