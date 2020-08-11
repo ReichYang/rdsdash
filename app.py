@@ -972,18 +972,31 @@ import splot
 import io
 import base64
 
+signal=subdf[subdf.Description=='SHOOTING'].resample('D', on='Datetime').sum()['Total Incidents']
+
+post=signal[signal.index>pd.to_datetime(time)]
+pre=signal[signal.index<pd.to_datetime(time)]
+    
+sci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
+    
+
+
 def ci(crime, time):
 
-    sdf=subdf[subdf.Description==crime]
-    # sdf=df[(df.Year>=2014)&(df.Year<=2020)&(df.Description==crime)]
-    
-    signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
-    
-    
-    post=signal[signal.index>pd.to_datetime(time)]
-    pre=signal[signal.index<pd.to_datetime(time)]
-    
-    ci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
+    if (crime=='SHOOTING') & (time==dt(2019,11,23)):
+
+        ci=sci
+    else:
+        sdf=subdf[subdf.Description==crime]
+        # sdf=df[(df.Year>=2014)&(df.Year<=2020)&(df.Description==crime)]
+        
+        signal=sdf.resample('D', on='Datetime').sum()['Total Incidents']
+        
+        
+        post=signal[signal.index>pd.to_datetime(time)]
+        pre=signal[signal.index<pd.to_datetime(time)]
+        
+        ci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
     
     fig=splot.plot(ci)
     
