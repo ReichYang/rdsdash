@@ -1060,7 +1060,7 @@ def ci(crime, time):
     post=signal[signal.index>pd.to_datetime(time)]
     pre=signal[signal.index<pd.to_datetime(time)]
     
-    ci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],seasons=[{'period': 7}, {'period': 30}])
+    ci = CausalImpact(signal, [pre.index[0],pre.index[-1]], [post.index[0],post.index[-1]],nseasons=[{'period': 7}, {'period': 30}])
     
     fig=splot.plot(ci)
     
