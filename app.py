@@ -970,7 +970,7 @@ def pro_html():
 from causalimpact import CausalImpact
 import splot
 import io
-import base64
+import base64, pickle
 
 
 
