@@ -1,0 +1,16 @@
+dash_bio==0.4.8
+matplotlib==3.2.0
+dash_html_components==1.0.3
+dash_table==4.9.0
+statsmodels==0.11.0
+scipy==1.4.1
+pmdarima==1.7.0
+mlxtend==0.17.2
+dash==1.14.0
+pandas==1.0.3
+dash_core_components==1.10.2
+jupyter_dash==0.2.1.post1
+plotly==4.8.1
+numpy==1.18.1
+fbprophet
+gunicorn
