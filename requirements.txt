@@ -14,7 +14,7 @@ pmdarima==1.7.0
 pandas==1.0.3
 dash_bio==0.4.8
 dash==1.14.0
-fbprophet
+prophet
 gunicorn
 lxml
 
