@@ -17,4 +17,4 @@ dash==1.14.0
 prophet
 gunicorn
 lxml
-
+Werkzeug==2.0.0
