@@ -888,7 +888,7 @@ def srima_fit(signal, m):
 # In[177]:
 
 
-from fbprophet import Prophet
+from prophet import Prophet
 def pro(crime,period):
     
     
